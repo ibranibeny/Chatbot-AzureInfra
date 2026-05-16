@@ -183,5 +183,5 @@ curl -s http://10.0.2.4:8000/v1/models
 | Slow first response | Model loading into GPU | Wait ~2 min after service start |
 | Port 8000 unreachable from VNet | NSG misconfigured | Check `gpu-nsg` rules |
 
-[← Qdrant VM & Doc Intelligence]({% link modules/04-qdrant-doc-intelligence.md %}){: .btn .mr-2 }
-[Next: Document Ingestion →]({% link modules/06-ingestion.md %}){: .btn .btn-primary }
+[← Qdrant VM & Doc Intelligence]({{ site.baseurl }}{% link modules/04-qdrant-doc-intelligence.md %}){: .btn .mr-2 }
+[Next: Document Ingestion →]({{ site.baseurl }}{% link modules/06-ingestion.md %}){: .btn .btn-primary }

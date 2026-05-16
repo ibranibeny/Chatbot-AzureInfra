@@ -213,5 +213,5 @@ docker stats --no-stream
 | Embedding pipeline timeout | AI Foundry throttling | Check TPM quota; add retry logic |
 | Cannot reach Qdrant from backend | NSG blocking | Verify VNet peering or NSG rules |
 
-[← Deploy Infrastructure]({% link modules/03-deploy-infrastructure.md %}){: .btn .mr-2 }
-[Next: GPU VM & vLLM →]({% link modules/05-gpu-vllm.md %}){: .btn .btn-primary }
+[← Deploy Infrastructure]({{ site.baseurl }}{% link modules/03-deploy-infrastructure.md %}){: .btn .mr-2 }
+[Next: GPU VM & vLLM →]({{ site.baseurl }}{% link modules/05-gpu-vllm.md %}){: .btn .btn-primary }

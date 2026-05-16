@@ -209,5 +209,5 @@ az containerapp logs show -g project-lab-dev -n chatbot-dev-backend --type conso
 az containerapp logs show -g project-lab-dev -n chatbot-dev-backend --type system --tail 20
 ```
 
-[← Document Ingestion]({% link modules/06-ingestion.md %}){: .btn .mr-2 }
-[Next: Testing & Troubleshooting →]({% link modules/08-testing.md %}){: .btn .btn-primary }
+[← Document Ingestion]({{ site.baseurl }}{% link modules/06-ingestion.md %}){: .btn .mr-2 }
+[Next: Testing & Troubleshooting →]({{ site.baseurl }}{% link modules/08-testing.md %}){: .btn .btn-primary }

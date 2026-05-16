@@ -196,5 +196,5 @@ The deployment is orchestrated by `deploy.sh` which calls modules in order:
 {: .important }
 > Step 7 (Doc Intelligence) must run **after** Step 6 (Qdrant VM) because it SSHs into the VM to deploy the disconnected container.
 
-[← Prerequisites]({% link modules/01-prerequisites.md %}){: .btn .mr-2 }
-[Next: Deploy Infrastructure →]({% link modules/03-deploy-infrastructure.md %}){: .btn .btn-primary }
+[← Prerequisites]({{ site.baseurl }}{% link modules/01-prerequisites.md %}){: .btn .mr-2 }
+[Next: Deploy Infrastructure →]({{ site.baseurl }}{% link modules/03-deploy-infrastructure.md %}){: .btn .btn-primary }

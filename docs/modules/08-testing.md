@@ -174,5 +174,5 @@ done
 {: .tip }
 > vLLM latency depends heavily on `max_tokens`. For faster responses, reduce the max tokens or use streaming.
 
-[← Backend & Frontend]({% link modules/07-backend-frontend.md %}){: .btn .mr-2 }
-[Next: Cleanup →]({% link modules/09-cleanup.md %}){: .btn .btn-primary }
+[← Backend & Frontend]({{ site.baseurl }}{% link modules/07-backend-frontend.md %}){: .btn .mr-2 }
+[Next: Cleanup →]({{ site.baseurl }}{% link modules/09-cleanup.md %}){: .btn .btn-primary }

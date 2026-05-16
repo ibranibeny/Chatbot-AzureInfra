@@ -116,5 +116,5 @@ You've successfully built a complete RAG chatbot system on Azure with:
 - **CI/CD**: Add GitHub Actions for automated deployment
 - **Observability**: Integrate Application Insights and Azure Monitor
 
-[← Testing & Troubleshooting]({% link modules/08-testing.md %}){: .btn .mr-2 }
-[Back to Home →]({% link index.md %}){: .btn .btn-primary }
+[← Testing & Troubleshooting]({{ site.baseurl }}{% link modules/08-testing.md %}){: .btn .mr-2 }
+[Back to Home →]({{ site.baseurl }}{% link index.md %}){: .btn .btn-primary }

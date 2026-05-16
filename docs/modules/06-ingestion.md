@@ -201,5 +201,5 @@ python ingest.py --source ~/large-docs/ --skip-existing
 | Qdrant upsert fails | Collection not created | Run collection creation script |
 | Slow ingestion | Large files or images | Pre-process to reduce file size |
 
-[← GPU VM & vLLM]({% link modules/05-gpu-vllm.md %}){: .btn .mr-2 }
-[Next: Backend & Frontend →]({% link modules/07-backend-frontend.md %}){: .btn .btn-primary }
+[← GPU VM & vLLM]({{ site.baseurl }}{% link modules/05-gpu-vllm.md %}){: .btn .mr-2 }
+[Next: Backend & Frontend →]({{ site.baseurl }}{% link modules/07-backend-frontend.md %}){: .btn .btn-primary }

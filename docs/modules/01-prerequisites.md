@@ -140,4 +140,4 @@ Before proceeding to Module 2:
 - [ ] Repository cloned
 - [ ] `dev.env` reviewed
 
-[Next: Architecture →]({% link modules/02-architecture.md %}){: .btn .btn-primary }
+[Next: Architecture →]({{ site.baseurl }}{% link modules/02-architecture.md %}){: .btn .btn-primary }

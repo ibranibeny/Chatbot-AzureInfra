@@ -211,5 +211,5 @@ az containerapp show \
 > az vm deallocate -g project-lab-dev -n chatbot-dev-vm --no-wait
 > ```
 
-[← Architecture]({% link modules/02-architecture.md %}){: .btn .mr-2 }
-[Next: Qdrant VM & Doc Intelligence →]({% link modules/04-qdrant-doc-intelligence.md %}){: .btn .btn-primary }
+[← Architecture]({{ site.baseurl }}{% link modules/02-architecture.md %}){: .btn .mr-2 }
+[Next: Qdrant VM & Doc Intelligence →]({{ site.baseurl }}{% link modules/04-qdrant-doc-intelligence.md %}){: .btn .btn-primary }
