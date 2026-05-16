@@ -26,7 +26,6 @@ flowchart TB
 
     subgraph QD_VM["VM — Standard_D8s_v5"]
         QD["Qdrant<br/>Vector DB<br/>:6333 / :6334"]
-        DI["Document Intelligence<br/>Disconnected Container<br/>:5050 (localhost)"]
         RERANK["Cross-Encoder<br/>ms-marco-MiniLM-L-12-v2"]
         EMB_PIPE["Embedding Pipeline<br/>(Python 3.11)"]
     end
@@ -35,6 +34,7 @@ flowchart TB
         AI["Azure AI Foundry<br/>text-embedding-3-small"]
         ACR["Container Registry"]
         KV["Key Vault"]
+        DI["Document Intelligence<br/>Cloud API (southeastasia)"]
     end
 
     subgraph Network["VNet 10.0.0.0/16"]
@@ -51,7 +51,7 @@ flowchart TB
     BE -->|generate response| VLLM
 
     EMB_PIPE -->|embed docs| AI
-    EMB_PIPE -->|localhost:5050| DI
+    EMB_PIPE -->|HTTPS| DI
     EMB_PIPE -->|store vectors| QD
 
     QD_VM -.->|vm-subnet| S1
@@ -98,7 +98,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant DOC as Documents
-    participant DI as Doc Intelligence (localhost:5050)
+    participant DI as Doc Intelligence (cloud API)
     participant EMB as Embedding Pipeline
     participant AI as AI Foundry
     participant QD as Qdrant

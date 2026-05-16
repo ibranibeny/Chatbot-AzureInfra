@@ -154,7 +154,7 @@
         <mxCell id="70" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#5C6BC0;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=3;" value="Document Intelligence" vertex="1">
           <mxGeometry height="90" width="210" x="250" y="550" as="geometry" />
         </mxCell>
-        <mxCell id="71" parent="1" style="text;html=1;fontSize=9;fontColor=#555;align=left;spacingLeft=5;" value="Disconnected Container · :5050&#10;Docker: form-recognizer/layout-3.0&#10;License: /data/doc-intel/license" vertex="1">
+        <mxCell id="71" parent="1" style="text;html=1;fontSize=9;fontColor=#555;align=left;spacingLeft=5;" value="Cloud API · S0 (southeastasia)&#10;Auth: Managed Identity&#10;RBAC: Cognitive Services User" vertex="1">
           <mxGeometry height="45" width="200" x="255" y="580" as="geometry" />
         </mxCell>
         <mxCell id="80" parent="1" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/containers/Container_Registries.svg;" value="" vertex="1">
@@ -238,7 +238,7 @@
         <mxCell id="E60" edge="1" parent="1" source="50" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#7B2D8E;strokeWidth=2;fontSize=9;fontColor=#7B2D8E;edgeStyle=orthogonalEdgeStyle;" target="33" value="/v1/chat/completions">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="I10" edge="1" parent="1" source="26" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" target="70" value="localhost:5050">
+        <mxCell id="I10" edge="1" parent="1" source="26" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" target="70" value="HTTPS (cloud API)">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="I20" edge="1" parent="1" source="26" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" target="60" value="embed docs">

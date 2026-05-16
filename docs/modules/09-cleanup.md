@@ -46,7 +46,7 @@ This runs 10 steps:
 | 3 | Delete Backend Container App | `container-app-backend-delete.sh` |
 | 4 | Delete Container Apps Environment | `container-app-env-delete.sh` |
 | 5 | Delete GPU VM | `vm-gpu-delete.sh` |
-| 6 | Stop Doc Intel container + delete commitment resource | `doc-intelligence-delete.sh` |
+| 6 | Delete Doc Intelligence cloud resource | `doc-intelligence-delete.sh` |
 | 7 | Delete Qdrant VM | `vm-delete.sh` |
 | 8 | Delete AI Foundry | `ai-foundry-delete.sh` |
 | 9 | Delete Key Vault | `keyvault-delete.sh` |
@@ -80,7 +80,7 @@ az vm start -g project-lab-dev -n chatbot-dev-gpu --no-wait
 ```
 
 {: .tip }
-> After restarting VMs, Docker containers with `--restart unless-stopped` will auto-start (Qdrant, Doc Intelligence, vLLM).
+> After restarting VMs, Docker containers with `--restart unless-stopped` will auto-start (Qdrant, vLLM).
 
 ---
 
@@ -103,7 +103,7 @@ You've successfully built a complete RAG chatbot system on Azure with:
 
 - ✅ Self-hosted LLM (Qwen3.5-9B) on GPU VM
 - ✅ Vector search with Qdrant
-- ✅ Offline document processing with disconnected Doc Intelligence
+- ✅ Cloud document processing with Azure Document Intelligence
 - ✅ Embeddings via Azure AI Foundry
 - ✅ Scalable serving with Container Apps
 - ✅ Infrastructure as Code with Azure CLI

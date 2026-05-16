@@ -39,14 +39,17 @@ curl -s http://localhost:6333/collections/documents \
   | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"Points: {d['result']['points_count']}\")"
 ```
 
-### 2. Document Intelligence — Disconnected container
+### 2. Document Intelligence — Cloud service
 
 ```bash
-# Container running?
-docker ps --filter name=doc-intel
+# Get endpoint from Key Vault
+DOC_INTEL_ENDPOINT=$(az keyvault secret show \
+  --vault-name chatbot-RAG-AI-Infra-kv \
+  --name doc-intel-endpoint --query value -o tsv)
 
 # API responding?
-curl -s http://localhost:5050/ | head -5
+curl -s "${DOC_INTEL_ENDPOINT}formrecognizer/documentModels?api-version=2023-07-31" \
+  -H "Authorization: Bearer $(az account get-access-token --resource https://cognitiveservices.azure.com --query accessToken -o tsv)" | head -c 200
 ```
 
 ### 3. vLLM — LLM serving
@@ -119,8 +122,8 @@ echo "Open in browser: https://$FRONTEND_FQDN"
 | Symptom | Diagnosis | Fix |
 |---|---|---|
 | Qdrant unreachable from backend | NSG blocking | Verify `AllowQdrantFromVNet` rule exists |
-| Doc Intel returns 401/403 | License expired | Re-run license download (see Module 4) |
-| Doc Intel container exits | Insufficient RAM | Check `docker logs doc-intel`; need ≥16 GB |
+| Doc Intel returns 401/403 | Missing RBAC role | Assign `Cognitive Services User` to VM identity |
+| Doc Intel timeout | Network/throttling | Check endpoint connectivity and S0 quota |
 | Embedding errors | AI Foundry throttled | Check TPM usage; add retry with backoff |
 
 ### Container Apps

@@ -195,7 +195,7 @@ python ingest.py --source ~/large-docs/ --skip-existing
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `Connection refused localhost:5050` | Doc Intel container not running | `docker start doc-intel` |
+| `401 Unauthorized` from Doc Intel | Missing RBAC role | Assign `Cognitive Services User` to VM identity |
 | `429 Too Many Requests` | AI Foundry rate limit | Add delays or increase TPM quota |
 | Empty extraction results | Unsupported file format | Check Doc Intel supported formats |
 | Qdrant upsert fails | Collection not created | Run collection creation script |

@@ -187,13 +187,13 @@ The deployment is orchestrated by `deploy.sh` which calls modules in order:
 | 4 | `keyvault.sh` | Key Vault |
 | 5 | `ai-foundry.sh` | AI Foundry + Embedding Deployment |
 | 6 | `vm.sh` | Qdrant VM (Docker, Qdrant container) |
-| 7 | `doc-intelligence.sh` | Commitment resource + disconnected container on VM |
+| 7 | `doc-intelligence.sh` | Document Intelligence cloud service (southeastasia) |
 | 8 | `vm-gpu.sh` | GPU VM (NVIDIA driver, vLLM) |
 | 9 | `container-app-*.sh` | Container Apps Env + Backend + Frontend |
 | 10 | `identity-roles.sh` | RBAC role assignments |
 
 {: .important }
-> Step 7 (Doc Intelligence) must run **after** Step 6 (Qdrant VM) because it SSHs into the VM to deploy the disconnected container.
+> Step 7 (Doc Intelligence) provisions a cloud service in `southeastasia` and stores its endpoint in Key Vault. It does NOT depend on Step 6.
 
 [← Prerequisites]({{ site.baseurl }}{% link modules/01-prerequisites.md %}){: .btn .mr-2 }
 [Next: Deploy Infrastructure →]({{ site.baseurl }}{% link modules/03-deploy-infrastructure.md %}){: .btn .btn-primary }
