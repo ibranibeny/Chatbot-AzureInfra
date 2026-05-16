@@ -12,12 +12,12 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop that provisions Azur
 | Vector Database | Qdrant (Docker) | VM — `Standard_D8s_v5` |
 | Embeddings (text) | `text-embedding-3-small` | Azure AI Foundry |
 | Re-ranking | `cross-encoder/ms-marco-MiniLM-L-12-v2` | Local on VM |
-| Document Processing | Document Intelligence (disconnected) | Docker on VM — `Standard_D8s_v5` |
+| Document Processing | Document Intelligence (cloud) | Azure Cognitive Services S0 (`southeastasia`) |
 | Region | — | `indonesiacentral` |
 
 ## Data Flow
 
-1. Documents → **Document Intelligence** (disconnected container on VM) → chunked → embedded via **Azure AI Foundry** → stored in **Qdrant**
+1. Documents → **Document Intelligence** (cloud API in `southeastasia`) → chunked → embedded via **Azure AI Foundry** → stored in **Qdrant**
 2. User query → **Streamlit** → **FastAPI** → embed query → Qdrant search → re-rank → context + prompt → **vLLM (Qwen3.5-9B)** → response
 
 ## Quick Start
@@ -94,7 +94,7 @@ cd ingestion && pip install -r requirements.txt && python ingest.py
 | 3 | Container Registry | `acr.sh` | `acr-delete.sh` |
 | 4 | Key Vault | `keyvault.sh` | `keyvault-delete.sh` |
 | 5 | AI Foundry (Embeddings) | `ai-foundry.sh` | `ai-foundry-delete.sh` |
-| 6 | Document Intelligence (commitment resource) | `doc-intelligence.sh` | `doc-intelligence-delete.sh` |
+| 6 | Document Intelligence (cloud) | `doc-intelligence.sh` | `doc-intelligence-delete.sh` |
 | 7 | Qdrant VM | `vm.sh` | `vm-delete.sh` |
 | 8 | GPU VM (vLLM) | `vm-gpu.sh` | `vm-gpu-delete.sh` |
 | 9 | Container Apps Env | `container-app-env.sh` | `container-app-env-delete.sh` |

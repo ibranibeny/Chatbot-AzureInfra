@@ -16,13 +16,13 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 | Embeddings (text) | `text-embedding-3-small` | Azure AI Foundry (managed identity) |
 | Embeddings (image) | Azure AI Vision or `text-embedding-3-large` | Azure AI Foundry |
 | Re-ranking | `cross-encoder/ms-marco-MiniLM-L-12-v2` | Local on VM |
-| Document Processing | Azure Document Intelligence (disconnected container) | Docker on VM — `Standard_D8s_v5` |
+| Document Processing | Azure Document Intelligence (cloud) | Azure Cognitive Services S0 (`southeastasia`) |
 | IaC | Azure CLI (`az`) scripts | — |
 | Region | — | `indonesiacentral` |
 
 ### Data Flow
 
-1. Documents ingested via **Document Intelligence** (disconnected container on VM) → chunked with **LangChain text splitters** → embedded via **Azure AI Foundry** (`AzureOpenAIEmbeddings`) → stored in **Qdrant** (`langchain-qdrant`)
+1. Documents ingested via **Document Intelligence** (cloud API in `southeastasia`) → chunked with **LangChain text splitters** → embedded via **Azure AI Foundry** (`AzureOpenAIEmbeddings`) → stored in **Qdrant** (`langchain-qdrant`)
 2. User query → **Streamlit** frontend → **FastAPI** backend → **LangChain RAG chain** (embedding query → Qdrant retrieval → context + prompt → **vLLM** via `ChatOpenAI`) → response
 
 ## Project Structure
@@ -70,7 +70,7 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 ### Security
 - Never hard-code secrets — use Azure Key Vault references or environment variables
 - Use managed identity for service-to-service auth (Foundry)
-- Document Intelligence runs as a disconnected container on the VM (localhost access, no network auth needed)
+- Document Intelligence runs as a cloud service in `southeastasia` — authenticated via managed identity (Cognitive Services User role)
 - Qdrant on VM should be on a private VNet; access via private endpoint or NSG rules
 
 ### Testing
@@ -99,7 +99,7 @@ cd ingestion && pip install -r requirements.txt && python ingest.py
 - **vLLM on GPU VM** (`Standard_NV36ads_A10_v5`) — serves Qwen3.5-9B with NVIDIA A10 (24GB VRAM); OpenAI-compatible API at `/v1/chat/completions`
 - **Qwen3.5-9B** — latest ~9B model from Qwen (Apache 2.0, multimodal image-text-to-text, 8.3M+ downloads)
 - **Qdrant on VM** (`Standard_D8s_v5`) — workshop simplicity; production would use Qdrant Cloud or Azure AI Search
-- **Document Intelligence disconnected container** — runs on the Qdrant VM (localhost:5050); Azure commitment resource needed for license only
+- **Document Intelligence cloud** — Azure managed service in `southeastasia` (S0 SKU); accessed via managed identity, endpoint stored in Key Vault
 - **Azure Container Apps** for frontend + backend — auto-scaling, scale-to-zero
 - **Streamlit** for frontend — rapid prototyping for workshop; production would use React/Next.js
 - **Azure CLI over Bicep/Terraform** — lower barrier for workshop attendees

@@ -13,7 +13,7 @@ set -euo pipefail
 ###############################################################################
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "${SCRIPT_DIR}/params/${ENV_NAME:-dev}.env"
+source "${SCRIPT_DIR}/params/${ENV_NAME:-RAG-AI-Infra}.env"
 
 ACTION="${1:-open}"
 
@@ -81,22 +81,6 @@ if [[ "$ACTION" == "open" ]]; then
     --name DenyQdrantFromInternet \
     --output none 2>/dev/null || true
 
-  echo ">>> Opening Doc Intelligence port (${DOC_INTEL_PORT}) on ${VM_NSG}"
-  az network nsg rule create \
-    --resource-group "$RESOURCE_GROUP" \
-    --nsg-name "$VM_NSG" \
-    --name AllowDocIntelFromInternet \
-    --priority 250 \
-    --source-address-prefixes "*" \
-    --destination-port-ranges "${DOC_INTEL_PORT}" \
-    --access Allow --protocol Tcp --output none 2>/dev/null || \
-  az network nsg rule update \
-    --resource-group "$RESOURCE_GROUP" \
-    --nsg-name "$VM_NSG" \
-    --name AllowDocIntelFromInternet \
-    --source-address-prefixes "*" \
-    --output none
-
   # --- GPU VM NSG ---
   echo ">>> Opening vLLM port (${VLLM_PORT}) on ${VM_GPU_NSG}"
   az network nsg rule update \
@@ -125,7 +109,6 @@ if [[ "$ACTION" == "open" ]]; then
   echo ">>> All service ports now open to the internet"
   echo ">>> SSH:     22 (VMs: ${VM_NAME}, ${VM_GPU_NAME})"
   echo ">>> Qdrant:  6333, 6334 (VM: ${VM_NAME})"
-  echo ">>> DocIntel: ${DOC_INTEL_PORT} (VM: ${VM_NAME})"
   echo ">>> vLLM:    ${VLLM_PORT} (VM: ${VM_GPU_NAME})"
 
 elif [[ "$ACTION" == "close" ]]; then
@@ -168,13 +151,6 @@ elif [[ "$ACTION" == "close" ]]; then
     --source-address-prefixes Internet \
     --destination-port-ranges 6333 6334 \
     --access Deny --protocol Tcp --output none 2>/dev/null || true
-
-  echo ">>> Removing AllowDocIntelFromInternet rule on ${VM_NSG}"
-  az network nsg rule delete \
-    --resource-group "$RESOURCE_GROUP" \
-    --nsg-name "$VM_NSG" \
-    --name AllowDocIntelFromInternet \
-    --output none 2>/dev/null || true
 
   # --- GPU VM NSG ---
   echo ">>> Restricting vLLM port to VNet only on ${VM_GPU_NSG}"

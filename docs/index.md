@@ -21,7 +21,7 @@ Build a **Retrieval-Augmented Generation (RAG) chatbot** powered by open-source 
 
 A complete RAG chatbot system that:
 
-- **Ingests documents** — PDF, images, Word files parsed by Document Intelligence (disconnected container)
+- **Ingests documents** — PDF, images, Word files parsed by Document Intelligence (cloud API)
 - **Generates embeddings** — Azure AI Foundry (`text-embedding-3-small`, 1536 dimensions)
 - **Stores vectors** — Qdrant vector database on a dedicated VM
 - **Re-ranks results** — Cross-encoder model for improved relevance
@@ -36,7 +36,7 @@ A complete RAG chatbot system that:
 | ⚙️ Backend | FastAPI | Container Apps (scale-to-zero) |
 | 🤖 LLM | vLLM + Qwen3.5-9B | GPU VM — `Standard_NV36ads_A10_v5` |
 | 🗄️ Vector DB | Qdrant | VM — `Standard_D8s_v5` |
-| 📄 Doc Processing | Document Intelligence | Disconnected container on VM |
+| 📄 Doc Processing | Document Intelligence | Cloud service (S0, `southeastasia`) |
 | 🔗 Embeddings | `text-embedding-3-small` | Azure AI Foundry |
 | 🔄 Re-ranking | `ms-marco-MiniLM-L-12-v2` | Local on VM |
 
@@ -62,7 +62,7 @@ A complete RAG chatbot system that:
 - **Azure CLI over Bicep/Terraform** — lower barrier for workshop attendees
 - **Open-source LLM (Qwen3.5-9B)** — no API key dependency, full control
 - **vLLM** — OpenAI-compatible API, efficient GPU utilization
-- **Document Intelligence disconnected** — runs offline on VM after license download
+- **Document Intelligence cloud** — Azure managed service, authenticated via managed identity
 - **Managed identity everywhere** — zero secrets in scripts
 
 ---

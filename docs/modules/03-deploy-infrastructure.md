@@ -58,7 +58,7 @@ This executes 10 steps in order. Total time: **~20–30 minutes** (GPU VM + driv
 | 4. Key Vault | `chatbot-dev-kv` | ~15s |
 | 5. AI Foundry | `chatbot-dev-ai` + embedding deployment | ~60s |
 | 6. Qdrant VM | `chatbot-dev-vm` + Docker + Qdrant container | ~5 min |
-| 7. Doc Intelligence | Commitment resource + disconnected container | ~3 min |
+| 7. Doc Intelligence | Cloud service (S0) in `southeastasia` | ~30s |
 | 8. GPU VM | `chatbot-dev-gpu` + NVIDIA driver + vLLM | ~10–15 min |
 | 9. Container Apps | Environment + backend + frontend | ~3 min |
 | 10. RBAC | All managed identity role assignments | ~30s |
@@ -132,14 +132,9 @@ bash modules/doc-intelligence.sh
 ```
 
 This step:
-1. Creates an Azure `FormRecognizer` resource with commitment tier pricing (DC0)
-2. SSHs into the Qdrant VM
-3. Pulls the Doc Intel container image
-4. Downloads a license file (one-time connected operation)
-5. Starts the container in disconnected mode on port 5050
-
-{: .warning }
-> This step requires the Qdrant VM (step 6) to be running and SSH-accessible.
+1. Creates an Azure `FormRecognizer` resource (S0) in `southeastasia`
+2. Stores the endpoint in Key Vault
+3. Authentication uses managed identity (`Cognitive Services User` RBAC role)
 
 ### Step 8 — GPU VM
 

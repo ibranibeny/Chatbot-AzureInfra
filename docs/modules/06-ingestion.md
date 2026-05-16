@@ -25,7 +25,7 @@ Ingest documents through the full pipeline: parse → chunk → embed → store 
 Documents (PDF, DOCX, images)
     │
     ▼
-Document Intelligence (localhost:5050)
+Document Intelligence (cloud API in southeastasia)
     │  Extract text, tables, layout
     ▼
 Chunking (Python)
@@ -85,7 +85,7 @@ python ingest.py --source ~/sample-docs/
 ### What happens during ingestion
 
 1. **Discovery** — Scans `--source` directory for supported files (PDF, DOCX, PNG, JPG, TXT)
-2. **Parsing** — Sends each file to Document Intelligence at `localhost:5050`
+2. **Parsing** — Sends each file to Document Intelligence cloud API in `southeastasia`
 3. **Chunking** — Splits extracted text into chunks (configurable size/overlap)
 4. **Embedding** — Calls Azure AI Foundry to generate vectors
 5. **Storage** — Upserts vectors with metadata into Qdrant

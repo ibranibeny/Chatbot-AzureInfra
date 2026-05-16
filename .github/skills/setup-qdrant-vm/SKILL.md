@@ -1,6 +1,6 @@
 ---
 name: setup-qdrant-vm
-description: "Set up the multi-purpose VM with Qdrant vector database, Document Intelligence, embedding processing, and re-ranking. Use when: provisioning Qdrant, configuring vector DB, setting up document ingestion VM, embedding pipeline."
+description: "Set up the multi-purpose VM with Qdrant vector database, embedding processing, and re-ranking. Use when: provisioning Qdrant, configuring vector DB, setting up document ingestion VM, embedding pipeline."
 ---
 
 # Set Up Multi-Purpose VM
@@ -19,7 +19,6 @@ Provisions and configures the workshop VM running Qdrant, embedding processing, 
 | Service | How | Port | Data Dir |
 |---|---|---|---|
 | Qdrant | Docker container | 6333 (REST), 6334 (gRPC) | `/data/qdrant` |
-| Document Intelligence | Docker container (disconnected) | 5050 | `/data/doc-intel` |
 | Embedding pipeline | Python scripts | N/A (batch job) | `/opt/ingestion` |
 | Re-ranking | Python service (cross-encoder) | 8001 (optional) | N/A |
 
@@ -100,58 +99,28 @@ source /opt/ingestion/venv/bin/activate
 pip install qdrant-client openai azure-identity requests sentence-transformers
 ```
 
-### 5. Deploy Document Intelligence Disconnected Container
-Reference: https://learn.microsoft.com/azure/ai-services/document-intelligence/containers/disconnected
-Document Intelligence runs as a **disconnected Docker container** on this VM — NOT as an Azure managed service.
+### 5. Configure Document Intelligence Access
+Document Intelligence runs as a **cloud service** in `southeastasia` — NOT as a container on this VM.
 
-**Prerequisites**: An Azure `FormRecognizer` resource with commitment tier pricing must exist (provisioned by `infra/modules/doc-intelligence.sh`).
+**Prerequisites**: An Azure `FormRecognizer` resource (S0) must exist (provisioned by `infra/modules/doc-intelligence.sh`).
+
+The VM’s managed identity needs the `Cognitive Services User` RBAC role to call the cloud API.
+The endpoint is stored in Key Vault as `doc-intel-endpoint`.
 
 ```bash
-# Create directories
-sudo mkdir -p /data/doc-intel/license /data/doc-intel/output
-sudo chown -R azureuser:azureuser /data/doc-intel
-
-# Pull the container image
-docker pull mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest
-
-# Step 1: Download license (requires one-time internet connectivity)
-# Get endpoint and key from the Azure FormRecognizer resource
-DOC_INTEL_ENDPOINT=$(az cognitiveservices account show \
-  --resource-group "$RESOURCE_GROUP" --name "$DOC_INTEL_NAME" \
-  --query properties.endpoint --output tsv)
-DOC_INTEL_KEY=$(az cognitiveservices account keys list \
-  --resource-group "$RESOURCE_GROUP" --name "$DOC_INTEL_NAME" \
-  --query key1 --output tsv)
-
-docker run --rm -it \
-  -v /data/doc-intel/license:/license \
-  mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest \
-  eula=accept \
-  billing="$DOC_INTEL_ENDPOINT" \
-  apikey="$DOC_INTEL_KEY" \
-  DownloadLicense=True \
-  Mounts:License=/license
-
-# Step 2: Run disconnected (no internet needed after this point)
-docker run -d \
-  --name doc-intel \
-  -p 5050:5050 \
-  -v /data/doc-intel/license:/license \
-  -v /data/doc-intel/output:/output \
-  --restart unless-stopped \
-  mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest \
-  eula=accept \
-  Mounts:License=/license \
-  Mounts:Output=/output
+# Get endpoint from Key Vault
+DOC_INTEL_ENDPOINT=$(az keyvault secret show \
+  --vault-name "$KV_NAME" --name doc-intel-endpoint \
+  --query value --output tsv)
 ```
 
-The embedding pipeline on this VM calls `http://localhost:5050` for document parsing — no network egress required.
+The embedding pipeline on this VM calls the cloud endpoint for document parsing via HTTPS.
 
-### 6. Configure Document Intelligence Access
-- **No NSG rule needed** — the container is accessed via localhost only
-- The Azure `FormRecognizer` commitment resource is only needed for license download
-- After license download, the container runs fully offline
-- Store the API key in Key Vault (used only during initial license download)
+### 6. Configure Cloud Doc Intelligence Access
+- **Auth**: Managed identity with `Cognitive Services User` RBAC role
+- **Endpoint**: Stored in Key Vault as `doc-intel-endpoint`
+- **No container or license needed** — fully managed cloud service
+- The ingestion pipeline calls the cloud API via HTTPS
 
 ### 7. Embedding models
 

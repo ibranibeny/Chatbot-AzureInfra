@@ -15,7 +15,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODULES_DIR="${SCRIPT_DIR}/modules"
-export ENV_NAME="${ENV_NAME:-dev}"
+export ENV_NAME="${ENV_NAME:-RAG-AI-Infra}"
 
 source "${SCRIPT_DIR}/params/${ENV_NAME}.env"
 

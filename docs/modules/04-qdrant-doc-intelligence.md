@@ -7,7 +7,7 @@ nav_order: 6
 # Module 4 — Qdrant VM & Document Intelligence
 {: .no_toc }
 
-Deep-dive into the vector database and document processing setup on the multi-purpose VM.
+Deep-dive into the vector database and cloud-based document processing.
 {: .fs-6 .fw-300 }
 
 <details open markdown="block">
@@ -82,84 +82,41 @@ ls -la /data/qdrant/
 
 ---
 
-## 4.3 Document Intelligence (Disconnected Container)
+## 4.3 Document Intelligence (Cloud Service)
 
 ### How it works
 
-Document Intelligence runs as a **disconnected Docker container** — after an initial license download, it operates fully offline. No data leaves the VM during document processing.
+Document Intelligence runs as an **Azure managed cloud service** (S0 SKU) in `southeastasia`. Documents are sent to the cloud endpoint via HTTPS, authenticated with managed identity.
 
 ```
-PDF/Image → Doc Intelligence (localhost:5050) → Structured text/tables → Embedding pipeline
+PDF/Image → Doc Intelligence (cloud API) → Structured text/tables → Embedding pipeline
 ```
 
-### Verify the container
+### Verify the service
 
 ```bash
-docker ps --filter name=doc-intel
+# Get the endpoint from Key Vault
+DOC_INTEL_ENDPOINT=$(az keyvault secret show \
+  --vault-name chatbot-RAG-AI-Infra-kv \
+  --name doc-intel-endpoint \
+  --query value -o tsv)
+
+# Test with a health check
+curl -s "${DOC_INTEL_ENDPOINT}formrecognizer/documentModels?api-version=2023-07-31" \
+  -H "Authorization: Bearer $(az account get-access-token --resource https://cognitiveservices.azure.com --query accessToken -o tsv)"
 ```
 
-Expected output:
-```
-CONTAINER ID   IMAGE                                       STATUS          PORTS
-def456         mcr.microsoft.com/.../layout-3.0:latest     Up 1 hour       0.0.0.0:5050->5050
-```
-
-### Test document parsing
-
-```bash
-# Test with a sample request
-curl -s -X POST "http://localhost:5050/formrecognizer/documentModels/prebuilt-layout:analyze?api-version=2023-07-31" \
-  -H "Content-Type: application/pdf" \
-  --data-binary @/path/to/sample.pdf | python3 -m json.tool
-```
-
-### License management
-
-The license file is stored at `/data/doc-intel/license/`:
-
-```bash
-ls -la /data/doc-intel/license/
-```
-
-{: .warning }
-> The license has an **expiration date**. To renew, re-run `doc-intelligence.sh` or manually run the license download step:
-> ```bash
-> docker run --rm -v /data/doc-intel/license:/license \
->   mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest \
->   eula=accept billing="$ENDPOINT" apikey="$KEY" \
->   DownloadLicense=True Mounts:License=/license
-> ```
-
-### Container configuration
+### Configuration
 
 | Setting | Value |
 |---|---|
-| Image | `mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest` |
-| Port | `5050` (localhost only) |
-| License | `/data/doc-intel/license` |
-| Output logs | `/data/doc-intel/output` |
-| Mode | Disconnected (offline) |
-| Restart | `unless-stopped` |
+| SKU | S0 |
+| Region | `southeastasia` |
+| Auth | Managed identity (`Cognitive Services User` RBAC role) |
+| Endpoint | Stored in Key Vault as `doc-intel-endpoint` |
 
----
-
-## 4.4 Embedding Pipeline
-
-The Python-based embedding pipeline runs on this VM and connects all the pieces:
-
-```bash
-# Check the virtual environment
-source /opt/ingestion/venv/bin/activate
-pip list | grep -E "qdrant|openai|sentence"
-```
-
-### Pipeline flow
-
-1. Read document from source (local or blob storage)
-2. Send to Doc Intelligence (`localhost:5050`) for text extraction
-3. Chunk extracted text (512 tokens, 50 token overlap)
-4. Generate embeddings via Azure AI Foundry (`text-embedding-3-small`)
-5. Upsert vectors into Qdrant (`localhost:6333`)
+{: .important }
+> The VM’s managed identity has `Cognitive Services User` role assigned, allowing the ingestion pipeline to call the cloud API without API keys.
 
 ### Re-ranker model
 
@@ -178,16 +135,13 @@ python3 -c "from sentence_transformers import CrossEncoder; m = CrossEncoder('cr
 ```bash
 # Qdrant logs
 docker logs qdrant --tail 50
-
-# Doc Intelligence logs
-docker logs doc-intel --tail 50
 ```
 
 ### Disk usage
 
 ```bash
 df -h /data
-du -sh /data/qdrant /data/doc-intel
+du -sh /data/qdrant
 ```
 
 ### Memory & CPU
@@ -208,8 +162,8 @@ docker stats --no-stream
 | Symptom | Cause | Fix |
 |---|---|---|
 | Qdrant container not starting | Port conflict or disk full | `docker logs qdrant` + check `/data` space |
-| Doc Intel returns 401 | License expired | Re-run license download |
-| Doc Intel container exits | Insufficient memory | VM needs ≥16 GB RAM for Doc Intel |
+| Doc Intel returns 401 | Managed identity missing RBAC role | Assign `Cognitive Services User` role |
+| Doc Intel timeout | Network or throttling issue | Check endpoint connectivity and S0 quota |
 | Embedding pipeline timeout | AI Foundry throttling | Check TPM quota; add retry logic |
 | Cannot reach Qdrant from backend | NSG blocking | Verify VNet peering or NSG rules |
 

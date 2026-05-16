@@ -64,7 +64,7 @@ IndonesiaCentral does **NOT** have GPU support for Container Apps or serverless 
 - **Endpoint**: OpenAI-compatible API (`/v1/chat/completions`)
 - Use `mcp_huggingface_h_hub_repo_search` to verify the latest Qwen model before downloading
 
-### VM — Multi-Purpose (Qdrant + Document Intelligence + Embedding)
+### VM — Multi-Purpose (Qdrant + Embedding)
 - **Recommended SKU**: `Standard_D8s_v5` (8 vCPU, 32 GB RAM) for workshop
 - **Production alternative**: `Standard_E8s_v5` (8 vCPU, 64 GB RAM) for larger datasets
 - Verify SKU availability:
@@ -77,35 +77,15 @@ IndonesiaCentral does **NOT** have GPU support for Container Apps or serverless 
 | Service | Port | Purpose |
 |---|---|---|
 | **Qdrant** | 6333 (REST), 6334 (gRPC) | Vector database for RAG retrieval |
-| **Document Intelligence (disconnected)** | 5050 | Document parsing — runs as disconnected Docker container on the VM |
 | **Embedding processing** | Internal | Runs embedding pipeline scripts |
 
-### Document Intelligence — Disconnected Container
-Document Intelligence runs as a **disconnected Docker container** on the Qdrant VM, NOT as an Azure managed service.
-- **Reference**: https://learn.microsoft.com/azure/ai-services/document-intelligence/containers/disconnected
-- **Container images**: `mcr.microsoft.com/azure-cognitive-services/form-recognizer/{model}-3.0:latest`
-  - `layout-3.0` — layout analysis (tables, structure)
-  - `read-3.0` — OCR / text extraction
-  - `invoice-3.0` — invoice parsing
-- **Prerequisites**:
-  1. An Azure `FormRecognizer` resource with **Commitment tier disconnected containers** pricing
-  2. Download a license file by running the container with `DownloadLicense=True` while connected
-  3. After license download, the container runs fully offline
-- **Ports**: Container exposes `:5050` internally, mapped to host `:5050`
-- **Data flow**: Embedding pipeline on the same VM calls `http://localhost:5050` — no network egress needed
-- **Security**: No NSG rule needed (localhost only). API key stored in Key Vault, fetched via managed identity
-- **Storage**: License file at `/data/doc-intel/license/`, usage logs at `/data/doc-intel/output/`
-- **Docker run** (after license download):
-  ```bash
-  docker run -d --name doc-intel \
-    -p 5050:5050 \
-    -v /data/doc-intel/license:/license \
-    -v /data/doc-intel/output:/output \
-    mcr.microsoft.com/azure-cognitive-services/form-recognizer/layout-3.0:latest \
-    eula=accept \
-    Mounts:License=/license \
-    Mounts:Output=/output
-  ```
+### Document Intelligence — Cloud Service
+Document Intelligence runs as an **Azure managed cloud service** (S0 SKU) in `southeastasia`, NOT as a container on the VM.
+- **Reference**: https://learn.microsoft.com/azure/ai-services/document-intelligence/
+- **Authentication**: Managed identity with `Cognitive Services User` RBAC role
+- **Endpoint**: Stored in Key Vault as `doc-intel-endpoint`
+- **Data flow**: Ingestion pipeline calls the cloud endpoint via HTTPS
+- **No container, no license download** — fully managed by Azure
 
 **Embedding models:**
 - **Text**: `text-embedding-3-small` via Azure AI Foundry (managed identity auth)
@@ -130,7 +110,7 @@ Document Intelligence runs as a **disconnected Docker container** on the Qdrant 
 - Use `--assign-identity` flag on creation
 - Grant RBAC roles instead of using keys:
   - `Cognitive Services OpenAI User` for Azure AI Foundry
-  - `Cognitive Services User` for Document Intelligence commitment resource (license download only)
+  - `Cognitive Services User` for Document Intelligence cloud service
   - `AcrPull` for Container Registry
 - **Never** store keys in scripts — use Key Vault or managed identity
 
@@ -161,8 +141,8 @@ Follow all conventions in `.github/instructions/azure-cli-infra.instructions.md`
 3. `modules/acr.sh` — Container Registry
 4. `modules/keyvault.sh` — Key Vault
 5. `modules/ai-foundry.sh` — Azure AI Foundry (embeddings + LLM fallback)
-6. `modules/doc-intelligence.sh` — Document Intelligence (commitment resource for license)
-7. `modules/vm.sh` — Multi-purpose VM (Qdrant, Doc Intel disconnected container, embedding)
+6. `modules/doc-intelligence.sh` — Document Intelligence (cloud service in southeastasia)
+7. `modules/vm.sh` — Multi-purpose VM (Qdrant, embedding)
 8. `modules/vm-gpu.sh` — GPU VM (vLLM)
 9. `modules/container-app-env.sh` — Container Apps environment
 10. `modules/container-app-backend.sh` — FastAPI backend

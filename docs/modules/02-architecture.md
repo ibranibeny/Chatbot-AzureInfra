@@ -44,7 +44,7 @@ All resources reside in a single VNet with three subnets:
 
 ```
 VNet: chatbot-dev-vnet (10.0.0.0/16)
-├── vm-subnet     (10.0.1.0/24)  → Qdrant VM + Doc Intelligence container
+├── vm-subnet     (10.0.1.0/24)  → Qdrant VM
 ├── gpu-subnet    (10.0.2.0/24)  → GPU VM (vLLM)
 └── apps-subnet   (10.0.3.0/27)  → Container Apps Environment
 ```
@@ -58,7 +58,7 @@ VNet: chatbot-dev-vnet (10.0.0.0/16)
 | DenyInternetInbound | * | Internet | All subnets |
 
 {: .note }
-> Document Intelligence (port 5050) does NOT need an NSG rule — it's accessed via `localhost` on the same VM as the embedding pipeline.
+> Document Intelligence runs as a cloud service in `southeastasia` — no NSG rule or localhost port needed.
 
 ---
 
@@ -66,12 +66,11 @@ VNet: chatbot-dev-vnet (10.0.0.0/16)
 
 ### Qdrant VM (`Standard_D8s_v5`)
 
-This VM runs three workloads:
+This VM runs two workloads:
 
 | Service | Runtime | Port | Storage |
 |---|---|---|---|
 | **Qdrant** | Docker container | 6333 (REST), 6334 (gRPC) | `/data/qdrant` |
-| **Document Intelligence** | Docker container (disconnected) | 5050 (localhost) | `/data/doc-intel` |
 | **Embedding Pipeline** | Python 3.11 venv | — | `/opt/ingestion` |
 | **Re-ranker** | Python (sentence-transformers) | — | In-process |
 
@@ -100,7 +99,7 @@ Both use **system-assigned managed identity** for ACR pull and AI Foundry access
 | Service | Purpose | SKU |
 |---|---|---|
 | **AI Foundry** | Embeddings (`text-embedding-3-small`) | S0 |
-| **Document Intelligence** | Commitment resource (license only) | DC0 |
+| **Document Intelligence** | Document processing (cloud API) | S0 |
 | **Container Registry** | Store app images | Basic |
 | **Key Vault** | Secrets (Qdrant API key, etc.) | Standard |
 
@@ -139,12 +138,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant DOC as Documents
-    participant DI as Doc Intelligence (localhost:5050)
+    participant DI as Doc Intelligence (cloud API)
     participant EMB as Embedding Pipeline
     participant AI as AI Foundry
     participant QD as Qdrant
 
-    DOC->>DI: Extract text/tables from PDF
+    DOC->>DI: Extract text/tables from PDF via cloud API
     DI-->>EMB: Structured content
     EMB->>EMB: Chunk text (512 tokens, 50 overlap)
     EMB->>AI: Generate embeddings
@@ -162,7 +161,7 @@ sequenceDiagram
 | **Least privilege** | Scoped RBAC roles per resource |
 | **Network isolation** | VNet + NSG rules |
 | **Private services** | Qdrant & vLLM VNet-only access |
-| **Offline document processing** | Doc Intelligence disconnected container |
+| **Offline document processing** | Doc Intelligence cloud service (managed identity auth) |
 
 ### RBAC Assignments
 

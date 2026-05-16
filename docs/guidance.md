@@ -35,7 +35,7 @@ This provisions (in order):
 4. Key Vault
 5. AI Foundry with `text-embedding-3-small` deployment
 6. Qdrant VM with Docker + embedding pipeline
-7. Document Intelligence (commitment resource + disconnected container on VM)
+7. Document Intelligence (cloud service in southeastasia)
 8. GPU VM with NVIDIA driver extension + vLLM + Qwen3.5-9B
 9. Container Apps environment + backend + frontend
 10. RBAC role assignments
@@ -49,7 +49,7 @@ python ingest.py --source ./sample-docs/
 ```
 
 Documents flow through:
-- **Document Intelligence** (disconnected container on VM) — extract text from PDFs/images
+- **Document Intelligence** (cloud API in `southeastasia`) — extract text from PDFs/images
 - **Azure AI Foundry** — generate embeddings (`text-embedding-3-small`, 1536 dims)
 - **Qdrant** — store vectors with metadata
 
