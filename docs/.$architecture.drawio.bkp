@@ -1,0 +1,373 @@
+<mxfile host="app.diagrams.net" modified="2026-05-16T00:00:00.000Z" agent="Copilot" version="24.7.6" type="device">
+  <diagram id="rag-chatbot-azure" name="RAG Chatbot — Azure Infrastructure">
+    <mxGraphModel dx="1900" dy="1060" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  LAYER 0 — Azure Subscription / Region                   -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="100" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0078D4;strokeWidth=2;dashed=1;dashPattern=10 4;" vertex="1" parent="1">
+          <mxGeometry x="30" y="10" width="1860" height="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="101" value="" style="aspect=fixed;html=1;points=[];align=center;image;image=img/lib/azure2/general/Subscriptions.svg;" vertex="1" parent="1">
+          <mxGeometry x="45" y="18" width="30" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="102" value="Azure Subscription · Region: indonesiacentral" style="text;html=1;fontSize=13;fontStyle=1;fontColor=#0078D4;align=left;" vertex="1" parent="1">
+          <mxGeometry x="80" y="15" width="400" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  LAYER 1 — Resource Group                                -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="110" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F6F8FA;strokeColor=#CCCCCC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="1820" height="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="111" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/general/Resource_Groups.svg;" vertex="1" parent="1">
+          <mxGeometry x="60" y="55" width="30" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="112" value="project-lab-dev" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#555555;align=left;" vertex="1" parent="1">
+          <mxGeometry x="95" y="55" width="140" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  USER                                                    -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="10" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/general/User_Resource.svg;" vertex="1" parent="1">
+          <mxGeometry x="910" y="100" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="End User" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="895" y="155" width="80" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  VNET                                                    -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="200" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#3B7FC4;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="70" y="200" width="1160" height="940" as="geometry" />
+        </mxCell>
+        <mxCell id="201" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/networking/Virtual_Networks.svg;" vertex="1" parent="1">
+          <mxGeometry x="80" y="207" width="42" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="202" value="chatbot-dev-vnet  ·  10.0.0.0/16" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#3B7FC4;align=left;" vertex="1" parent="1">
+          <mxGeometry x="128" y="207" width="300" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ────────── Subnet: vm-subnet ────────── -->
+        <mxCell id="210" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDEAF6;strokeColor=#6BA3C7;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="90" y="250" width="530" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="211" value="vm-subnet · 10.0.1.0/24" style="text;html=1;fontSize=10;fontStyle=1;fontColor=#3B7FC4;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="255" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- VM icon -->
+        <mxCell id="20" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/compute/Virtual_Machines.svg;" vertex="1" parent="1">
+          <mxGeometry x="120" y="300" width="65" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="chatbot-dev-vm&#xa;Standard_D8s_v5" style="text;html=1;fontSize=10;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="365" width="110" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant box -->
+        <mxCell id="22" value="Qdrant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="250" y="290" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="REST :6333 · gRPC :6334&#xa;Docker: qdrant/qdrant&#xa;Storage: /data/qdrant" style="text;html=1;fontSize=9;fontColor=#555;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="255" y="320" width="200" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="API Key: QDRANT__SERVICE__API_KEY" style="text;html=1;fontSize=8;fontColor=#CC0000;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="255" y="370" width="200" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Re-ranker -->
+        <mxCell id="25" value="Re-ranker&#xa;cross-encoder/ms-marco-MiniLM-L-12-v2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="430" width="210" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Embedding Pipeline -->
+        <mxCell id="26" value="Embedding Pipeline · Python 3.11&#xa;qdrant-client · openai · sentence-transformers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="490" width="240" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- NSG vm-subnet -->
+        <mxCell id="27" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/networking/Network_Security_Groups.svg;" vertex="1" parent="1">
+          <mxGeometry x="530" y="260" width="45" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="Allow 6333-6334&#xa;from VNet only" style="text;html=1;fontSize=8;fontColor=#CC0000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="505" y="308" width="95" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ────────── Subnet: gpu-subnet ────────── -->
+        <mxCell id="220" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0E6F6;strokeColor=#9673A6;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="90" y="690" width="530" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="221" value="gpu-subnet · 10.0.2.0/24" style="text;html=1;fontSize=10;fontStyle=1;fontColor=#7B2D8E;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="695" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- GPU VM icon -->
+        <mxCell id="30" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/compute/Virtual_Machines.svg;" vertex="1" parent="1">
+          <mxGeometry x="120" y="740" width="65" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="chatbot-dev-gpu&#xa;Standard_NV36ads_A10_v5" style="text;html=1;fontSize=10;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="85" y="805" width="140" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- NVIDIA Extension -->
+        <mxCell id="32" value="NVIDIA GPU Driver Extension&#xa;Microsoft.HpcCompute v1.6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76B900;strokeColor=#5A8F00;fontColor=#FFFFFF;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="850" width="175" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- vLLM box -->
+        <mxCell id="33" value="vLLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="310" y="730" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="Model: Qwen/Qwen3.5-9B&#xa;Port: 8000  ·  GPU: NVIDIA A10 24GB&#xa;--max-model-len 8192&#xa;--gpu-memory-utilization 0.9" style="text;html=1;fontSize=9;fontColor=#555;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="315" y="755" width="230" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="35" value="OpenAI-compatible API&#xa;/v1/chat/completions" style="text;html=1;fontSize=9;fontStyle=2;fontColor=#7B2D8E;align=left;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="315" y="815" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- systemd -->
+        <mxCell id="36" value="systemd: vllm.service · Docker: vllm/vllm-openai:latest" style="text;html=1;fontSize=8;fontColor=#888;align=center;" vertex="1" parent="1">
+          <mxGeometry x="280" y="870" width="290" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- NSG gpu-subnet -->
+        <mxCell id="37" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/networking/Network_Security_Groups.svg;" vertex="1" parent="1">
+          <mxGeometry x="530" y="700" width="45" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="38" value="Allow 8000&#xa;from VNet only" style="text;html=1;fontSize=8;fontColor=#CC0000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="508" y="748" width="90" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ────────── Subnet: apps-subnet ────────── -->
+        <mxCell id="230" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#66BB6A;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="650" y="250" width="560" height="870" as="geometry" />
+        </mxCell>
+        <mxCell id="231" value="apps-subnet · 10.0.3.0/27" style="text;html=1;fontSize=10;fontStyle=1;fontColor=#2E7D32;align=left;" vertex="1" parent="1">
+          <mxGeometry x="660" y="255" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Container Apps Environment -->
+        <mxCell id="240" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#66BB6A;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="290" width="510" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="241" value="Container Apps Environment: chatbot-dev-env" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#2E7D32;align=left;" vertex="1" parent="1">
+          <mxGeometry x="690" y="295" width="350" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend -->
+        <mxCell id="40" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/containers/Container_Apps.svg;" vertex="1" parent="1">
+          <mxGeometry x="900" y="360" width="68" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="chatbot-dev-frontend" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="865" y="425" width="140" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="Streamlit · :8501&#xa;CPU: 0.5 · RAM: 1Gi&#xa;Replicas: 0 → 3" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="870" y="445" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Backend -->
+        <mxCell id="50" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/containers/Container_Apps.svg;" vertex="1" parent="1">
+          <mxGeometry x="900" y="560" width="68" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="chatbot-dev-backend" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="865" y="625" width="140" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="FastAPI · :8000&#xa;CPU: 1 · RAM: 2Gi&#xa;Replicas: 0 → 3" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="870" y="645" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Managed identity badge on backend -->
+        <mxCell id="53" value="🔑 System-assigned identity" style="text;html=1;fontSize=8;fontColor=#0078D4;fontStyle=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="870" y="688" width="140" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  MANAGED SERVICES (outside VNet)                         -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="300" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;strokeWidth=2;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="200" width="570" height="940" as="geometry" />
+        </mxCell>
+        <mxCell id="301" value="Azure PaaS / Managed Services" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#E65100;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="207" width="250" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- AI Foundry -->
+        <mxCell id="60" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="280" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="61" value="Azure AI Foundry" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1475" y="355" width="120" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="62" value="chatbot-dev-ai  ·  S0&#xa;&#xa;Deployment:&#xa;text-embedding-3-small&#xa;1536 dimensions · 120 TPM" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="375" width="150" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Document Intelligence -->
+        <mxCell id="70" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/ai_machine_learning/Form_Recognizers.svg;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="490" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="71" value="Document Intelligence" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="565" width="140" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="72" value="chatbot-dev-docintel  ·  S0" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1465" y="585" width="140" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Container Registry -->
+        <mxCell id="80" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/containers/Container_Registries.svg;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="650" width="68" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="81" value="Container Registry" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="720" width="110" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="82" value="chatbotdevacr  ·  Basic" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1475" y="740" width="120" height="15" as="geometry" />
+        </mxCell>
+
+        <!-- Key Vault -->
+        <mxCell id="90" value="" style="aspect=fixed;html=1;points=[];image;image=img/lib/azure2/security/Key_Vaults.svg;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="810" width="68" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="91" value="Key Vault" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="885" width="70" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="92" value="chatbot-dev-kv&#xa;RBAC authorization" style="text;html=1;fontSize=9;fontColor=#555;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1475" y="905" width="120" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  LEGEND                                                  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <mxCell id="900" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#DDD;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="960" width="280" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="901" value="Legend" style="text;html=1;fontSize=11;fontStyle=1;fontColor=#333;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="965" width="60" height="18" as="geometry" />
+        </mxCell>
+        <!-- solid blue -->
+        <mxCell id="910" value="" style="endArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1310" y="1000" as="sourcePoint" /><mxPoint x="1380" y="1000" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="911" value="Request / data flow" style="text;html=1;fontSize=9;fontColor=#333;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="992" width="120" height="16" as="geometry" />
+        </mxCell>
+        <!-- dotted grey -->
+        <mxCell id="920" value="" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;dashed=1;dashPattern=3 3;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1310" y="1025" as="sourcePoint" /><mxPoint x="1380" y="1025" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="921" value="Managed identity / RBAC" style="text;html=1;fontSize=9;fontColor=#333;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="1017" width="140" height="16" as="geometry" />
+        </mxCell>
+        <!-- dashed orange -->
+        <mxCell id="930" value="" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;dashed=1;dashPattern=8 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1310" y="1050" as="sourcePoint" /><mxPoint x="1380" y="1050" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="931" value="Ingestion pipeline" style="text;html=1;fontSize=9;fontColor=#333;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="1042" width="120" height="16" as="geometry" />
+        </mxCell>
+        <!-- subnet swatch -->
+        <mxCell id="940" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDEAF6;strokeColor=#6BA3C7;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="1072" width="65" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="941" value="Subnet boundary" style="text;html=1;fontSize=9;fontColor=#333;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="1070" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  EDGES — Request / Data Flow (solid blue)                -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+
+        <!-- User → Frontend (HTTPS) -->
+        <mxCell id="E10" value="HTTPS" style="endArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=2;fontSize=10;fontStyle=1;fontColor=#0078D4;" edge="1" parent="1" source="10" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend → Backend -->
+        <mxCell id="E20" value="POST /chat" style="endArrow=classic;html=1;strokeColor=#2E7D32;strokeWidth=2;fontSize=9;fontColor=#2E7D32;" edge="1" parent="1" source="40" target="50">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend → AI Foundry (embed query) -->
+        <mxCell id="E30" value="embed query" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=2;fontSize=9;fontColor=#0078D4;" edge="1" parent="1" source="50" target="60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend → Qdrant (search) -->
+        <mxCell id="E40" value="similarity&#xa;search" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=2;fontSize=9;fontColor=#0078D4;" edge="1" parent="1" source="50" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend → Re-ranker -->
+        <mxCell id="E50" value="re-rank" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=1;fontSize=9;fontColor=#0078D4;" edge="1" parent="1" source="50" target="25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend → vLLM -->
+        <mxCell id="E60" value="/v1/chat/completions" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#7B2D8E;strokeWidth=2;fontSize=9;fontColor=#7B2D8E;" edge="1" parent="1" source="50" target="33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  EDGES — Ingestion Pipeline (dashed orange)              -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+
+        <!-- Pipeline → Doc Intelligence -->
+        <mxCell id="I10" value="extract text" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" edge="1" parent="1" source="26" target="70">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Pipeline → AI Foundry (embed) -->
+        <mxCell id="I20" value="embed docs" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" edge="1" parent="1" source="26" target="60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Pipeline → Qdrant (upsert) -->
+        <mxCell id="I30" value="upsert&#xa;vectors" style="endArrow=classic;html=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontColor=#E65100;dashed=1;dashPattern=8 4;" edge="1" parent="1" source="26" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!--  EDGES — Managed Identity / RBAC (dotted grey)           -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+
+        <!-- Backend → ACR (AcrPull) -->
+        <mxCell id="M10" value="AcrPull" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;fontSize=8;fontColor=#999;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="50" target="80">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend → ACR (AcrPull) -->
+        <mxCell id="M20" value="AcrPull" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;fontSize=8;fontColor=#999;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="40" target="80">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend → AI Foundry (Cognitive Services OpenAI User) -->
+        <mxCell id="M30" value="Cognitive Services OpenAI User" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;fontSize=8;fontColor=#999;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="50" target="60">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1250" y="320" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- VM → AI Foundry (Cognitive Services User) -->
+        <mxCell id="M40" value="Cognitive Services User" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;fontSize=8;fontColor=#999;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="20" target="60">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="152" y="280" /><mxPoint x="1250" y="280" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- VM → Key Vault -->
+        <mxCell id="M50" value="secrets" style="endArrow=classic;html=1;strokeColor=#999;strokeWidth=1;fontSize=8;fontColor=#999;dashed=1;dashPattern=3 3;" edge="1" parent="1" source="20" target="90">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="152" y="580" /><mxPoint x="1260" y="580" /><mxPoint x="1260" y="844" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
