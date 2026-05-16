@@ -12,6 +12,9 @@ BACKEND_URL=$(az containerapp show \
   --name "$CA_BACKEND_NAME" \
   --query "properties.configuration.ingress.fqdn" --output tsv 2>/dev/null || echo "")
 
+# ACR admin credentials
+ACR_PASSWORD=$(az acr credential show --name "$ACR_NAME" --query "passwords[0].value" --output tsv)
+
 az containerapp create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$CA_FRONTEND_NAME" \
@@ -23,8 +26,8 @@ az containerapp create \
   --max-replicas 3 \
   --cpu 0.5 --memory 1Gi \
   --registry-server "${ACR_NAME}.azurecr.io" \
-  --registry-identity system \
-  --system-assigned \
+  --registry-username "$ACR_NAME" \
+  --registry-password "$ACR_PASSWORD" \
   --env-vars \
     "BACKEND_URL=https://${BACKEND_URL}" \
   --output none 2>/dev/null || \

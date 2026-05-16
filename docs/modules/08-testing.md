@@ -79,10 +79,17 @@ BACKEND_FQDN=$(az containerapp show -g project-lab-dev -n chatbot-dev-backend \
 # Health check
 curl -s https://$BACKEND_FQDN/health
 
-# Chat endpoint
+# Upload a PDF document
+curl -s -X POST https://$BACKEND_FQDN/upload \
+  -F "file=@my-document.pdf"
+
+# List indexed documents
+curl -s https://$BACKEND_FQDN/documents | python3 -m json.tool
+
+# Chat endpoint (ask about the uploaded document)
 curl -s -X POST https://$BACKEND_FQDN/chat \
   -H "Content-Type: application/json" \
-  -d '{"message":"What services are deployed?"}' | python3 -m json.tool
+  -d '{"message":"Summarize the key points"}' | python3 -m json.tool
 ```
 
 ### 5. Frontend — Streamlit

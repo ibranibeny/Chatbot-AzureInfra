@@ -19,13 +19,27 @@ source "${SCRIPT_DIR}/params/${ENV_NAME:-dev}.env"
 
 echo ">>> Creating Document Intelligence commitment resource: ${DOC_INTEL_NAME}"
 
-# 1. Create the Cognitive Services resource with commitment tier for disconnected containers
+# 1. Create the Cognitive Services resource for disconnected container license
+# NOTE: FormRecognizer is not available in indonesiacentral; use southeastasia
+# The resource is only needed for license download — the container runs locally on the VM
+DOC_INTEL_LOCATION="southeastasia"
+echo ">>> Using ${DOC_INTEL_LOCATION} for FormRecognizer resource (not available in ${LOCATION})"
+
 az cognitiveservices account create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$DOC_INTEL_NAME" \
-  --location "$LOCATION" \
+  --location "$DOC_INTEL_LOCATION" \
   --kind FormRecognizer \
-  --sku DC0 \
+  --sku S0 \
+  --custom-domain "$DOC_INTEL_NAME" \
+  --output none 2>/dev/null || true
+
+# Ensure local auth is enabled (needed for license key download)
+az rest --method patch \
+  --url "https://management.azure.com$(az cognitiveservices account show \
+    --resource-group "$RESOURCE_GROUP" --name "$DOC_INTEL_NAME" \
+    --query id --output tsv)?api-version=2023-05-01" \
+  --body '{"properties":{"disableLocalAuth":false}}' \
   --output none 2>/dev/null || true
 
 # 2. Get endpoint and key for license download
@@ -41,7 +55,7 @@ DOC_INTEL_KEY=$(az cognitiveservices account keys list \
 
 # Store key in Key Vault for reference (used only for license download)
 az keyvault secret set \
-  --vault-name "$KEYVAULT_NAME" \
+  --vault-name "$KV_NAME" \
   --name "doc-intel-key" \
   --value "$DOC_INTEL_KEY" \
   --output none 2>/dev/null || true

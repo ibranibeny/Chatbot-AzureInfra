@@ -107,11 +107,30 @@ Every project must include:
 - Export a PNG/SVG to `docs/architecture.png` for embedding in `README.md` and workshop docs
 - Update the diagram whenever infrastructure changes
 
+## NSG Open/Close Script
+- `modules/nsg-open.sh` opens or closes all service ports to the internet for workshop/demo testing
+- Usage: `ENV_NAME=dev bash modules/nsg-open.sh open` (open) or `ENV_NAME=dev bash modules/nsg-open.sh close` (restore VNet-only)
+- Opens: Qdrant (6333/6334), Doc Intelligence (5050), vLLM (8000)
+- **WARNING**: Never leave ports open in production. Always run `close` after testing
+
+## VM Start/Stop
+- VMs may be deallocated to save costs. Start them before running workloads or tests:
+  ```bash
+  az vm start --resource-group project-lab-dev --name chatbot-dev-vm --no-wait
+  az vm start --resource-group project-lab-dev --name chatbot-dev-gpu --no-wait
+  ```
+- Deallocate when done:
+  ```bash
+  az vm deallocate --resource-group project-lab-dev --name chatbot-dev-vm --no-wait
+  az vm deallocate --resource-group project-lab-dev --name chatbot-dev-gpu --no-wait
+  ```
+
 ## Testing with MCP Playwright
 - **Always** create end-to-end tests using MCP Playwright to validate deployments
 - Test scenarios: frontend loads, API health endpoint responds, Qdrant REST API reachable, vLLM `/v1/models` returns model list
 - Place test files in `tests/e2e/`
 - Run tests after `deploy.sh` completes to verify the full stack
+- Before testing VM-hosted services from the internet, run `modules/nsg-open.sh open` to unblock NSG rules
 
 ## Deployment Lifecycle — Deploy AND Delete
 Every deployable resource MUST have **both** scripts:

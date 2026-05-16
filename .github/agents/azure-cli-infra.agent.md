@@ -183,13 +183,37 @@ Follow all conventions in `.github/instructions/azure-cli-infra.instructions.md`
 11. `modules/vnet-delete.sh`
 12. `modules/resource-group-delete.sh`
 
-## Post-Deployment Testing
+## Post-Deployment Operations
 
-After `deploy.sh` completes, run MCP Playwright e2e tests (`tests/e2e/`) to validate:
+### NSG Open/Close (Workshop Testing)
+Use `modules/nsg-open.sh` to open or close all service ports to the internet:
+```bash
+# Open all ports (Qdrant 6333/6334, Doc Intel 5050, vLLM 8000) to internet
+ENV_NAME=dev bash modules/nsg-open.sh open
+
+# Restore VNet-only access (production-safe)
+ENV_NAME=dev bash modules/nsg-open.sh close
+```
+**WARNING**: `nsg-open.sh open` exposes all service ports to the internet. Use only for workshops/demos.
+
+### VM Start/Stop
+VMs are deallocated by default to save costs. Start them before testing:
+```bash
+# Start VMs
+az vm start --resource-group project-lab-dev --name chatbot-dev-vm --no-wait
+az vm start --resource-group project-lab-dev --name chatbot-dev-gpu --no-wait
+
+# Stop (deallocate) VMs when done
+az vm deallocate --resource-group project-lab-dev --name chatbot-dev-vm --no-wait
+az vm deallocate --resource-group project-lab-dev --name chatbot-dev-gpu --no-wait
+```
+
+### Post-Deployment Testing
+After `deploy.sh` completes and VMs are running, run MCP Playwright e2e tests (`tests/e2e/`) to validate:
 - Frontend loads and renders
 - Backend API health endpoint responds
-- Qdrant REST API is reachable
-- vLLM `/v1/models` returns the model list
+- Qdrant REST API is reachable (requires `nsg-open.sh open` for internet access)
+- vLLM `/v1/models` returns the model list (requires `nsg-open.sh open` for internet access)
 
 ## GitHub Workflow
 

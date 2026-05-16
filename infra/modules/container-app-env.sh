@@ -9,7 +9,7 @@ echo ">>> Creating Container Apps Environment: ${CAE_NAME}"
 az containerapp env create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$CAE_NAME" \
-  --location "$LOCATION" \
+  --location "${LOCATION_APPS:-$LOCATION}" \
   --output none 2>/dev/null || true
 
 echo ">>> Container Apps Environment ${CAE_NAME} ready"

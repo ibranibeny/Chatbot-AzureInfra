@@ -20,7 +20,7 @@ if [[ "$SKU_INFO" == "[]" ]]; then
   exit 1
 fi
 
-echo ">>> GPU SKU ${VM_GPU_SIZE} available — proceeding"
+echo ">>> GPU SKU ${VM_GPU_SIZE} available - proceeding"
 
 # Cloud-init for Docker + NVIDIA Container Toolkit + vLLM
 # NOTE: NVIDIA GPU driver is installed via the Azure VM extension (below), not cloud-init.
@@ -33,7 +33,7 @@ curl -fsSL https://get.docker.com | sh
 usermod -aG docker azureuser
 
 # Install NVIDIA Container Toolkit
-# (Requires NVIDIA driver to be installed first — handled by VM extension)
+# (Requires NVIDIA driver to be installed first - handled by VM extension)
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
   | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
@@ -111,7 +111,7 @@ az vm extension set \
   --version 1.6 \
   --output none
 
-echo ">>> NVIDIA driver extension installed — VM may reboot to complete setup"
+echo ">>> NVIDIA driver extension installed - VM may reboot to complete setup"
 echo ">>> vLLM systemd service will start automatically after driver is ready"
 
 # Start vLLM service (if VM did not reboot)

@@ -26,13 +26,12 @@ Build, containerize, and deploy the FastAPI backend and Streamlit frontend to Az
 ```
 backend/
 ├── app/
-│   ├── main.py           # FastAPI entrypoint
-│   ├── rag/              # RAG pipeline
-│   │   ├── retriever.py  # Qdrant similarity search
-│   │   ├── reranker.py   # Cross-encoder re-ranking
-│   │   ├── prompt.py     # Prompt template
-│   │   └── chain.py      # Orchestrates retrieve → re-rank → generate
-│   └── models/           # Pydantic request/response models
+│   ├── main.py           # FastAPI entrypoint (/chat, /upload, /documents, /health)
+│   ├── rag/
+│   │   ├── chain.py      # LangChain RAG chain (embeddings, retriever, LLM)
+│   │   └── ingest.py     # PDF parsing, chunking, embedding → Qdrant
+│   └── models/
+│       └── schemas.py    # Pydantic request/response models
 ├── Dockerfile
 └── requirements.txt
 ```
@@ -44,9 +43,12 @@ cd backend
 pip install -r requirements.txt
 
 # Set environment variables
-export QDRANT_URL="http://<VM_PRIVATE_IP>:6333"
-export VLLM_URL="http://<GPU_PRIVATE_IP>:8000"
-export AI_FOUNDRY_ENDPOINT="https://chatbot-dev-ai.openai.azure.com/"
+export QDRANT_URL="http://<VM_PUBLIC_IP>:6333"
+export QDRANT_COLLECTION="documents"
+export VLLM_BASE_URL="http://<GPU_PUBLIC_IP>:8000/v1"
+export VLLM_MODEL="Qwen/Qwen3.5-9B"
+export AZURE_AI_ENDPOINT="https://<AI_FOUNDRY>.openai.azure.com/"
+export EMBEDDING_DEPLOYMENT="text-embedding-3-small"
 
 uvicorn app.main:app --reload --port 8000
 ```
@@ -56,26 +58,43 @@ uvicorn app.main:app --reload --port 8000
 | Method | Path | Description |
 |---|---|---|
 | `POST` | `/chat` | Send a message, get RAG response |
-| `GET` | `/health` | Health check |
-| `GET` | `/docs` | Swagger UI (auto-generated) |
+| `POST` | `/upload` | Upload a PDF, parse → chunk → embed → store in Qdrant |
+| `GET`  | `/documents` | List indexed documents |
+| `GET`  | `/health` | Health check |
+| `GET`  | `/docs` | Swagger UI (auto-generated) |
 
 ### Test the API
 
 ```bash
-curl -X POST http://localhost:8000/chat \
+# Health check
+curl https://$BACKEND_URL/health
+
+# Upload a PDF
+curl -X POST https://$BACKEND_URL/upload \
+  -F "file=@my-document.pdf"
+
+# List indexed documents
+curl https://$BACKEND_URL/documents
+
+# Chat (asks about uploaded documents)
+curl -X POST https://$BACKEND_URL/chat \
   -H "Content-Type: application/json" \
-  -d '{"message": "What is Azure Container Apps?"}'
+  -d '{"message": "Summarize the key findings"}'
 ```
 
 ---
 
 ## 7.2 Frontend — Streamlit Chat UI
 
+The Streamlit frontend provides:
+- **Sidebar**: PDF file uploader + list of indexed documents
+- **Main area**: Chat interface with the RAG chatbot
+
 ### Project structure
 
 ```
 frontend/
-├── app.py                # Streamlit entrypoint
+├── app.py                # Streamlit entrypoint (sidebar upload + chat)
 └── requirements.txt
 ```
 
@@ -88,6 +107,14 @@ pip install -r requirements.txt
 export BACKEND_URL="http://localhost:8000"
 streamlit run app.py --server.port 8501
 ```
+
+### Upload workflow
+
+1. Open the sidebar (☰ icon)
+2. Click **Browse files** to select a PDF
+3. Click **Upload & Index** to send to backend
+4. Wait for confirmation (shows pages + chunks processed)
+5. Ask questions about the uploaded document in chat
 
 ---
 
@@ -164,11 +191,12 @@ echo "Open: https://$FRONTEND_URL"
 
 | Variable | Value | Source |
 |---|---|---|
-| `QDRANT_URL` | `http://chatbot-dev-vm:6333` | VNet DNS |
-| `QDRANT_API_KEY` | (from Key Vault) | Managed identity |
-| `VLLM_URL` | `http://chatbot-dev-gpu:8000` | VNet DNS |
-| `AI_FOUNDRY_ENDPOINT` | `https://chatbot-dev-ai.openai.azure.com/` | Environment |
-| `EMBEDDING_MODEL` | `text-embedding-3-small` | Environment |
+| `QDRANT_URL` | `http://<VM_PUBLIC_IP>:6333` | VM public IP |
+| `QDRANT_COLLECTION` | `documents` | Environment |
+| `VLLM_BASE_URL` | `http://<GPU_PUBLIC_IP>:8000/v1` | GPU VM public IP |
+| `VLLM_MODEL` | `Qwen/Qwen3.5-9B` | Environment |
+| `AZURE_AI_ENDPOINT` | `https://<AI_FOUNDRY>.openai.azure.com/` | AI Foundry |
+| `EMBEDDING_DEPLOYMENT` | `text-embedding-3-small` | Environment |
 
 ### Frontend Container App
 

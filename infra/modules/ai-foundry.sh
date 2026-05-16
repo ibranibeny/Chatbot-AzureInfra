@@ -9,7 +9,7 @@ echo ">>> Creating Azure AI Services account: ${AI_ACCOUNT_NAME}"
 az cognitiveservices account create \
   --resource-group "$RESOURCE_GROUP" \
   --name "$AI_ACCOUNT_NAME" \
-  --location "$LOCATION" \
+  --location "${LOCATION_APPS:-$LOCATION}" \
   --kind OpenAI \
   --sku S0 \
   --assign-identity \

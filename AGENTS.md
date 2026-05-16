@@ -9,7 +9,8 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 | Component | Technology | Azure Service / SKU |
 |---|---|---|
 | Frontend | Streamlit (Python) | Azure Container Apps |
-| Backend (RAG API) | Python (FastAPI) | Azure Container Apps |
+| Backend (RAG API) | Python (FastAPI + LangChain) | Azure Container Apps |
+| RAG Framework | LangChain (`langchain`, `langchain-openai`, `langchain-qdrant`) | — |
 | LLM Serving | vLLM + Qwen3.5-9B | GPU VM — `Standard_NV36ads_A10_v5` (A10, 24GB VRAM) |
 | Vector Database | Qdrant (Docker) | VM — `Standard_D8s_v5` |
 | Embeddings (text) | `text-embedding-3-small` | Azure AI Foundry (managed identity) |
@@ -21,8 +22,8 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 
 ### Data Flow
 
-1. Documents ingested via **Document Intelligence** (disconnected container on VM) → chunked → embedded via **Azure AI Foundry** → stored in **Qdrant**
-2. User query → **Streamlit** frontend → **FastAPI** backend → embedding query → Qdrant similarity search → context + prompt → **Azure OpenAI** → response
+1. Documents ingested via **Document Intelligence** (disconnected container on VM) → chunked with **LangChain text splitters** → embedded via **Azure AI Foundry** (`AzureOpenAIEmbeddings`) → stored in **Qdrant** (`langchain-qdrant`)
+2. User query → **Streamlit** frontend → **FastAPI** backend → **LangChain RAG chain** (embedding query → Qdrant retrieval → context + prompt → **vLLM** via `ChatOpenAI`) → response
 
 ## Project Structure
 
@@ -35,8 +36,10 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 ├── backend/                  # FastAPI RAG service (Container Apps)
 │   ├── app/
 │   │   ├── main.py           # FastAPI entrypoint
-│   │   ├── rag/              # RAG pipeline (retrieval, prompt, chain)
-│   │   └── models/           # Pydantic request/response models
+│   │   ├── rag/
+│   │   │   └── chain.py      # LangChain RAG chain (retriever + LLM)
+│   │   └── models/
+│   │       └── schemas.py    # Pydantic request/response models
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── frontend/                 # Streamlit chat UI (App Service)
@@ -54,6 +57,7 @@ A **RAG (Retrieval-Augmented Generation) chatbot** workshop/demo that provisions
 - Python 3.11+
 - Use `requirements.txt` per deployable component (no monorepo single lock)
 - FastAPI for the backend API; Streamlit for frontend
+- **LangChain** for RAG pipeline: `langchain`, `langchain-openai`, `langchain-qdrant`
 - Pydantic v2 for data validation
 
 ### Azure CLI (`az`) IaC
