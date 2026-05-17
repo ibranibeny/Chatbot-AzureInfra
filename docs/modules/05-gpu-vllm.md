@@ -84,9 +84,35 @@ docker logs vllm-qwen --tail 50
 | Container | `vllm/vllm-openai:latest` |
 | Model | `Qwen/Qwen3.5-9B` |
 | Port | `8000` |
-| Max model length | `8192` tokens |
-| GPU memory utilization | `0.9` (90% of 24 GB) |
+| Max model length | `4096` tokens |
+| GPU memory utilization | `0.85` (85% of 24 GB) |
+| Thinking mode | Disabled (`--override-generation-config`) |
+| Eager mode | `--enforce-eager` |
 | API format | OpenAI-compatible |
+
+### Docker run command
+
+```bash
+docker run -d \
+  --name vllm \
+  --gpus all \
+  --shm-size=8g \
+  -p 8000:8000 \
+  vllm/vllm-openai:latest \
+  --model Qwen/Qwen3.5-9B \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --max-model-len 4096 \
+  --gpu-memory-utilization 0.85 \
+  --enforce-eager \
+  --override-generation-config '{"enable_thinking": false}'
+```
+
+{: .important }
+> The `--override-generation-config '{"enable_thinking": false}'` flag disables Qwen3.5-9B's
+> chain-of-thought "thinking" mode at the server level. Without this, the model generates
+> internal reasoning tokens before the actual answer, resulting in 40-80s response times
+> instead of 8-12s.
 
 ### Test the API
 

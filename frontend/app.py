@@ -34,7 +34,10 @@ with st.sidebar:
                         f"Pages: {data['pages']} | Chunks: {data['chunks']}"
                     )
                 except httpx.HTTPStatusError as e:
-                    detail = e.response.json().get("detail", str(e))
+                    try:
+                        detail = e.response.json().get("detail", str(e))
+                    except Exception:
+                        detail = e.response.text or str(e)
                     st.error(f"Upload failed: {detail}")
                 except httpx.HTTPError as e:
                     st.error(f"Connection error: {e}")

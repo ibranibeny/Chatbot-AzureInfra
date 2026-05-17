@@ -113,8 +113,9 @@ echo "Open in browser: https://$FRONTEND_FQDN"
 | Symptom | Diagnosis | Fix |
 |---|---|---|
 | `nvidia-smi` not found | Driver extension still installing | `az vm extension list -g project-lab-dev --vm-name chatbot-dev-gpu -o table` — wait for Succeeded |
-| vLLM OOM | Model exceeds available VRAM | Reduce `--max-model-len 4096` or `--gpu-memory-utilization 0.85` |
-| vLLM slow first response | Model loading into GPU memory | Normal — wait ~2 min after restart |
+| vLLM OOM | Model exceeds available VRAM | Reduce `--max-model-len 4096`, `--gpu-memory-utilization 0.85`, add `--enforce-eager` |
+| vLLM slow first response | Triton JIT kernel compilation | Normal on first request — wait 2-5 min. Subsequent requests are fast (8-12s) |
+| vLLM response 40-80s | Thinking mode enabled | Add `--override-generation-config '{"enable_thinking": false}'` to Docker cmd |
 | vLLM container crash loop | CUDA version mismatch | Check `docker logs vllm-qwen`; may need driver update |
 
 ### Qdrant VM
@@ -178,11 +179,19 @@ done
 | Embedding generation | 50–100 ms |
 | Qdrant similarity search | 5–20 ms |
 | Re-ranking (3-5 candidates) | 50–100 ms |
-| vLLM generation (200 tokens) | 2–5 seconds |
-| **Total end-to-end** | **3–6 seconds** |
+| vLLM generation (200 tokens) | 3–8 seconds |
+| **Total end-to-end (warm)** | **8–12 seconds** |
+| **Cold start (scale-from-zero)** | **25–30 seconds** |
 
 {: .tip }
-> vLLM latency depends heavily on `max_tokens`. For faster responses, reduce the max tokens or use streaming.
+> vLLM latency depends on `max_tokens` and whether thinking mode is disabled.
+> With thinking mode enabled, responses take 40-80s. With it disabled
+> (`--override-generation-config '{"enable_thinking": false}'` + `chat_template_kwargs`
+> in API calls), responses drop to 8-12s.
+
+{: .note }
+> The first request after vLLM restarts may take several minutes due to Triton JIT
+> kernel compilation. Subsequent requests are fast.
 
 [← Backend & Frontend]({{ site.baseurl }}{% link modules/07-backend-frontend.md %}){: .btn .mr-2 }
 [Next: Cleanup →]({{ site.baseurl }}{% link modules/09-cleanup.md %}){: .btn .btn-primary }

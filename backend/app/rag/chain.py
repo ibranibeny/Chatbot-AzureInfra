@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 
 from langchain_openai import ChatOpenAI, AzureOpenAIEmbeddings
@@ -40,6 +41,7 @@ llm = ChatOpenAI(
     model=VLLM_MODEL,
     temperature=0.7,
     max_tokens=2048,
+    extra_body={"chat_template_kwargs": {"enable_thinking": False}},
 )
 
 # --- RAG Prompt ---
@@ -99,6 +101,8 @@ async def rag_chain(question: str, session_id: str | None = None) -> dict:
     context = _format_docs(docs)
     chain = RAG_PROMPT | llm | StrOutputParser()
     answer = await chain.ainvoke({"context": context, "question": question})
+    # Strip any thinking tokens from Qwen3 output (handles both <think>...</think> and bare ...`</think>`)
+    answer = re.sub(r"^.*?</think>\s*", "", answer, flags=re.DOTALL).strip()
     return {
         "answer": answer,
         "sources": _get_sources(docs),
