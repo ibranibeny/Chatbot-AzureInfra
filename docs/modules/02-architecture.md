@@ -27,7 +27,8 @@ The RAG chatbot consists of three planes:
 |---|---|---|
 | **Serving** | Streamlit + FastAPI (Container Apps) | User-facing chatbot interface |
 | **Inference** | vLLM + Qwen3.5-9B (GPU VM) | Generate natural language answers |
-| **Data** | Qdrant + Doc Intelligence + Embeddings (VM) | Document processing & vector search |
+| **Data** | Qdrant + Embeddings + Re-ranker (VM) | Vector search & retrieval |
+| **Processing** | Document Intelligence (Azure cloud service) | Document extraction (cloud API, `southeastasia`) |
 
 ```
 User → Streamlit → FastAPI → [embed query] → Qdrant → [re-rank] → vLLM → Response
